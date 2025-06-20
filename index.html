@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anne's Confidence Cards</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #fce3ec, #ffe6fa);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    .card, .welcome {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 24px;
+      max-width: 400px;
+      text-align: center;
+      font-size: 1.2rem;
+      color: #5c3d5e;
+      margin-bottom: 20px;
+    }
+    button {
+      background-color: #db5ea7;
+      border: none;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background-color: #c24f92;
+    }
+  </style>
+</head>
+<body>
+  <div class="welcome" id="welcomeScreen">
+    <img src="anne.jpg" alt="Anne's photo" style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%; margin-bottom: 16px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
+    <h2>Welcome, Anne 💖</h2>
+    <p>This is your personal confidence deck — a space made just for you.</p>
+    <p>Whenever you need a reminder of your light, click below to receive it.</p>
+    <button onclick="startApp()">Start My Day</button>
+  </div>
+
+
+  <div class="card" id="quoteCard" style="display: none;">
+    Loading confidence magic...
+  </div>
+  <button id="nextBtn" onclick="showRandomQuote()" style="display: none;">Next Card</button>
+
+  <script>
+    const quotes = [
+      "You don’t need to look like anyone else to be breathtaking. You already are.",
+      "Your softness is not weakness — it’s rare strength wrapped in kindness.",
+      "You have the kind of beauty that turns heads and the kind of soul that holds hearts.",
+      "There’s only one Anne. And she is magnetic, divine, and deeply enough.",
+      "Even your scars are elegant — proof that you’ve survived everything you thought would break you.",
+      "You are not a backup plan. You are the whole main character.",
+      "Someone out there is wishing they had your laugh, your light, your exact vibe.",
+      "The world doesn’t get to decide your worth — you do.",
+      "There is power in the way you keep going. That’s beauty no mirror can reflect.",
+      "You're not “too much.” You’re exactly as radiant as you were meant to be.",
+      "You make things brighter just by walking into a room. That’s not luck. That’s you.",
+      "Your heart is beautiful — and not everyone deserves access to it. Guard it with grace.",
+      "You glow differently when you believe in yourself. And you should.",
+      "You don’t owe anyone perfection. Just presence. And that’s already a gift.",
+      "Today, you are enough. Tomorrow, too. Always."
+    ];
+
+    function showRandomQuote() {
+      const quoteCard = document.getElementById('quoteCard');
+      const randomIndex = Math.floor(Math.random() * quotes.length);
+      quoteCard.textContent = quotes[randomIndex];
+    }
+
+    function startApp() {
+      document.getElementById('welcomeScreen').style.display = 'none';
+      document.getElementById('quoteCard').style.display = 'block';
+      document.getElementById('nextBtn').style.display = 'inline-block';
+      showRandomQuote();
+    }
+  </script>
+</body>
+</html>
