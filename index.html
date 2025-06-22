@@ -5,17 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Anne's Confidence Cards</title>
   <style>
+    * { box-sizing: border-box; }
+
     body {
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #fce3ec, #ffe6fa);
+      margin: 0;
+      padding: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       min-height: 100vh;
-      margin: 0;
-      padding: 20px;
     }
+
     .card, .welcome {
       background: white;
       border-radius: 16px;
@@ -26,7 +28,9 @@
       font-size: 1.2rem;
       color: #5c3d5e;
       margin-bottom: 20px;
+      animation: fadeIn 1s ease-in;
     }
+
     button {
       background-color: #db5ea7;
       border: none;
@@ -36,26 +40,94 @@
       font-size: 1rem;
       cursor: pointer;
       transition: background 0.3s;
+      margin-top: 10px;
     }
+
     button:hover {
       background-color: #c24f92;
+    }
+
+    .profile-pic {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .quote-image {
+      width: 100%;
+      max-width: 350px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    .journal-input {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .journal-input input {
+      width: 100%;
+      max-width: 360px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: 1rem;
+    }
+
+    ul#journalList {
+      margin-top: 20px;
+      list-style: none;
+      padding: 0;
+      max-width: 360px;
+      text-align: left;
+      color: #5c3d5e;
+    }
+
+    ul#journalList li {
+      background: #fff5fc;
+      border-left: 4px solid #db5ea7;
+      margin-bottom: 12px;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
   </style>
 </head>
 <body>
   <div class="welcome" id="welcomeScreen">
-    <img src="anne.jpg" alt="Anne's photo" style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%; margin-bottom: 16px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
+    <img src="anne.jpg" alt="Anne's photo" class="profile-pic" />
     <h2>Welcome, Anne 💖</h2>
     <p>This is your personal confidence deck — a space made just for you.</p>
     <p>Whenever you need a reminder of your light, click below to receive it.</p>
     <button onclick="startApp()">Start My Day</button>
   </div>
 
+  <div id="mainContent" style="display: none; flex-direction: column; align-items: center;">
+    <img id="quoteImage" src="quote1.jpg" alt="Inspiration" class="quote-image" />
+    <div class="card" id="quoteCard">Loading confidence magic...</div>
+    <button id="nextBtn" onclick="showRandomQuote()">Next Card</button>
+    <div class="journal-input">
+      <input type="text" id="journalEntry" placeholder="Today I want to remember…" />
+      <button onclick="saveJournal()">Save Thought</button>
+    </div>
+    
+<button id="toggleJournal" onclick="toggleJournal()" style="position: fixed; bottom: 20px; right: 20px; background-color: #fff; color: #db5ea7; border: 2px solid #db5ea7; border-radius: 50px; padding: 10px 20px; font-weight: bold;">📝 Journal</button>
+<div id="journalEntries" style="display:none; position: fixed; bottom: 80px; right: 20px; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 0 10px rgba(0,0,0,0.2); max-height: 300px; overflow-y: auto; width: 300px; font-size: 0.9rem;">
+  <h4 style="margin-top: 0; color: #5c3d5e;">Saved Entries</h4>
+  <ul id="journalList" style="list-style: none; padding-left: 0;"></ul>
+</div>
 
-  <div class="card" id="quoteCard" style="display: none;">
-    Loading confidence magic...
   </div>
-  <button id="nextBtn" onclick="showRandomQuote()" style="display: none;">Next Card</button>
 
   <script>
     const quotes = [
@@ -80,14 +152,43 @@
       const quoteCard = document.getElementById('quoteCard');
       const randomIndex = Math.floor(Math.random() * quotes.length);
       quoteCard.textContent = quotes[randomIndex];
+      document.getElementById('quoteImage').src = `quote${randomIndex + 1}.jpg`;
     }
 
     function startApp() {
       document.getElementById('welcomeScreen').style.display = 'none';
-      document.getElementById('quoteCard').style.display = 'block';
-      document.getElementById('nextBtn').style.display = 'inline-block';
+      document.getElementById('mainContent').style.display = 'flex';
       showRandomQuote();
+      showEntries();
+    }
+
+    function saveJournal() {
+      const entry = document.getElementById('journalEntry').value;
+      if (entry) {
+        const saved = JSON.parse(localStorage.getItem('anneJournal') || "[]");
+        saved.push({ date: new Date().toLocaleString(), text: entry });
+        localStorage.setItem('anneJournal', JSON.stringify(saved));
+        alert('Saved: ' + entry);
+        document.getElementById('journalEntry').value = '';
+        showEntries();
+      } else {
+        alert('Please write something first.');
+      }
+    }
+
+    
+function toggleJournal() {
+  const panel = document.getElementById('journalEntries');
+  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
+
+function showEntries() {
+
+      const entries = JSON.parse(localStorage.getItem('anneJournal') || "[]");
+      const journalList = document.getElementById('journalList');
+      journalList.innerHTML = entries.map(e => `<li><strong>${e.date}</strong><br>${e.text}</li>`).join('');
     }
   </script>
 </body>
 </html>
+
